@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "Workout Tracker",
+    "slug": "workout-tracker",
+    "scheme": "workout-tracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.stasbelia.workouttracker"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#121212"
+      },
+      "package": "com.stasbelia.workouttracker"
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-router",
+      "expo-status-bar",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#121212"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Дозволь Workout Tracker обрати фото для твого аватара.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      "expo-system-ui"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
