@@ -35,6 +35,8 @@ export default function ProfileDetails() {
       } finally { if (active.current && !controller.signal.aborted) setLoading(false); }
     })();
     return () => { active.current = false; controller.abort(); write.current?.abort(); };
+  // Retry changes callback identity so useFocusEffect reloads; it is not API input.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[token,signOut,year,today,attempt]));
   async function save() {
     if (!token || !currentProfile || loading || busy.current) return;

@@ -36,6 +36,8 @@ function WorkoutChoices() {
       } finally { if(!controller.signal.aborted)setLoading(false); }
     })();
     return () => controller.abort();
+  // Retry changes callback identity so useFocusEffect reloads; it is not API input.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[token,signOut,attempt]));
   function choose(template?: WorkoutTemplateSummary) {
     if (navigating.current) return;

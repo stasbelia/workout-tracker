@@ -1,4 +1,4 @@
-import { Colors, useTheme, useThemedStyles } from '../ui/theme';
+import { Colors, useThemedStyles } from '../ui/theme';
 import React, { useCallback, useRef, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
@@ -10,7 +10,6 @@ import { WorkoutApiError } from '../workouts/workoutApi';
 
 type Props = { name: string; notes: string; sets: SetInput[]; disabled: boolean; onBusy: (busy: boolean) => void; compact?: boolean };
 export default function SaveExerciseTemplate({ name, notes, sets, disabled, onBusy, compact = false }: Props) {
-  const { colors } = useTheme();
   const styles = useThemedStyles(createStyles);
   const { token, signOut } = useSession();
   const [saving, setSaving] = useState(false), [message, setMessage] = useState<string | null>(null);

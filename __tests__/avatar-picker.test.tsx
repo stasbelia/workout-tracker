@@ -6,7 +6,8 @@ import { getAvatar, saveAvatar } from '../src/avatar/avatarApi';
 import { prepareAvatar } from '../src/avatar/prepareAvatar';
 
 const mockSignOut = jest.fn();
-jest.mock('../src/auth/SessionProvider', () => ({ useSession: () => ({ token: 'test-token', signOut: mockSignOut }) }));
+let mockToken = 'test-token';
+jest.mock('../src/auth/SessionProvider', () => ({ useSession: () => ({ token: mockToken, signOut: mockSignOut }) }));
 jest.mock('expo-image-picker', () => ({ launchImageLibraryAsync: jest.fn() }));
 jest.mock('../src/avatar/prepareAvatar', () => ({ prepareAvatar: jest.fn() }));
 jest.mock('../src/avatar/avatarApi', () => ({
@@ -23,6 +24,7 @@ const remove = jest.fn();
 const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
 
 beforeEach(() => {
+  mockToken = 'test-token';
   read.mockReset().mockResolvedValue(oldAvatar);
   save.mockReset().mockResolvedValue(newAvatar);
   prepare.mockReset().mockResolvedValue({ exists: true, delete: remove } as unknown as Awaited<ReturnType<typeof prepareAvatar>>);
@@ -37,6 +39,17 @@ test('після відкриття показує збережений ават
   await screen.findByLabelText('Збережений аватар');
   expect(screen.getByLabelText('Збережений аватар').props.source.uri).toBe(oldAvatar.url);
   expect(screen.queryByText('Фото збережене у профілі')).toBeNull();
+});
+test('при зміні акаунта старе фото приховане, поки новий аватар завантажується', async () => {
+  const view = await render(<AvatarPicker />);
+  await screen.findByLabelText('Збережений аватар');
+  const previousSignal = read.mock.calls[0][1];
+  mockToken = 'another-test-token';
+  read.mockImplementation(() => new Promise(() => {}));
+  await view.rerender(<AvatarPicker />);
+  expect(screen.queryByLabelText('Збережений аватар')).toBeNull();
+  expect(previousSignal.aborted).toBe(true);
+  expect(read).toHaveBeenLastCalledWith('another-test-token', expect.any(AbortSignal));
 });
 test('скасування вибору не змінює фото й не завантажує файл', async () => {
   pick.mockResolvedValue({ canceled: true, assets: null });

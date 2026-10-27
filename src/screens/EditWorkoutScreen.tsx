@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useSession } from '../auth/SessionProvider';
 import { getWorkout, parseWorkoutId, updateWorkout, Workout, WorkoutApiError, WorkoutEdit } from '../workouts/workoutApi';
@@ -31,6 +31,8 @@ export default function EditWorkoutScreen() {
       } finally { if (!controller.signal.aborted && active.current) setLoading(false); }
     })();
     return () => { active.current = false; operation.current?.abort(); };
+  // Retry changes callback identity so useFocusEffect reloads; it is not API input.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, token, signOut, attempt]));
   const back = () => id ? router.dismissTo({ pathname: '/workouts/[workoutId]', params: { workoutId: String(id) } }) : router.dismissTo('/');
   async function save() {

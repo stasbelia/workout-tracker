@@ -128,7 +128,7 @@ test('збережена раніше вправа стає шаблоном і 
   await waitFor(() => expect(save).toHaveBeenCalledTimes(1));
   expect(save.mock.calls[0][1]).toMatchObject({ name: template.name, notes: template.notes, sets: template.sets });
   expect(record).not.toHaveBeenCalled();
-  const { router } = require('expo-router');
+  const { router } = jest.requireActual<typeof import('expo-router')>('expo-router');
   await act(async () => router.push('/workouts/8/exercises/new'));
   expect(screen.getAllByLabelText('Назва вправи')).toHaveLength(1);
   await show(); await fireEvent.press(screen.getByRole('tab', { name: 'Мої шаблони' }));

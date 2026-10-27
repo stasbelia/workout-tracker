@@ -1,5 +1,6 @@
 import { act, cleanup, fireEvent, renderRouter, screen, waitFor } from 'expo-router/testing-library';
 import { Stack, router } from 'expo-router';
+import { userEvent } from '@testing-library/react-native';
 import HomeScreen from '../src/screens/HomeScreen';
 import NewWorkoutScreen from '../src/screens/NewWorkoutScreen';
 import WorkoutStartScreen from '../src/screens/WorkoutStartScreen';
@@ -113,6 +114,25 @@ test('наступна сторінка додається до списку; п
   await screen.findByText('Ноги');
   expect(screen.getByText('Верх тіла')).toBeTruthy();
   expect(list.mock.calls[2][2]).toBe(cursor);
+});
+test('індикатор оновлення відрізняє перезавантаження списку від наступної сторінки', async () => {
+  const cursor = '2026-10-23:7';
+  let resolvePage!: (page: Awaited<ReturnType<typeof listWorkouts>>) => void;
+  let resolveRefresh!: (page: Awaited<ReturnType<typeof listWorkouts>>) => void;
+  list.mockResolvedValueOnce({ workouts: [workout], nextCursor: cursor })
+    .mockImplementationOnce(() => new Promise((resolve) => { resolvePage = resolve; }))
+    .mockImplementationOnce(() => new Promise((resolve) => { resolveRefresh = resolve; }));
+  await open(); await screen.findByText('Верх тіла');
+  await fireEvent.press(screen.getByRole('button', { name: 'Показати ще' }));
+  expect(screen.getByTestId('workout-list').props.refreshControl.props.refreshing).toBe(false);
+  await act(async () => { resolvePage({ workouts: [{ ...workout, id: 8, title: 'Ноги' }], nextCursor: null }); });
+  await screen.findByText('Ноги');
+  await userEvent.setup().pullToRefresh(screen.getByTestId('workout-list'));
+  expect(screen.getByTestId('workout-list').props.refreshControl.props.refreshing).toBe(true);
+  expect(list.mock.calls[2][2]).toBeUndefined();
+  await act(async () => { resolveRefresh({ workouts: [workout], nextCursor: null }); });
+  expect(screen.getByTestId('workout-list').props.refreshControl.props.refreshing).toBe(false);
+  expect(screen.queryByText('Ноги')).toBeNull();
 });
 test('401 завершує сесію; звичайна мережева помилка її зберігає', async () => {
   list.mockRejectedValue(new WorkoutApiError('Увійдіть повторно.', 401));

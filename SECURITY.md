@@ -21,6 +21,8 @@ If a credential is exposed, revoke and replace it. Removing it from a later comm
 
 These packages are not imported by the application source. This does not establish the absence of exposure in development tools or prove an installed app safe. Compatible upstream fixes still need review. Do not use `npm audit fix --force`: its proposed Expo SDK 44 downgrade is incompatible with this SDK 58 project. Treat development servers and tunnels as development infrastructure, not production hosting.
 
+The SDK 58 lint configuration currently resolves ESLint 9.39.5, whose npm package reports end of support. The bundled React lint plugin does not declare ESLint 10 compatibility; upgrading this development tool requires a compatible configuration and plugins.
+
 ## Українська
 
 - Ключі AWS, доступ до БД і секрет підпису JWT зберігаються лише на бекенді поза Git. Конфігурація мобільного застосунку потрапляє до користувача й не може містити секретів.
@@ -39,3 +41,5 @@ These packages are not imported by the application source. This does not establi
 Йдеться про перевірку підпису в `node-forge`, використання пам’яті в `zod` і межі буфера в `uuid`; офіційні описи наведені вище. Для `node-forge` виправлену версію ще не вказано, а сумісні оновлення інструментів потребують окремої перевірки.
 
 Код застосунку не імпортує ці пакети напряму. Це не доводить відсутність ризику в інструментах розробки або безпеку встановленої збірки. `npm audit fix --force` не застосовується: запропоноване пониження до Expo SDK 44 несумісне з проєктом на SDK 58. Сервер розробки й тунелі не призначені для робочого розміщення API.
+
+Конфігурація lint для SDK 58 наразі встановлює ESLint 9.39.5, для якого npm повідомляє про завершення підтримки. Підключений плагін React не заявляє сумісності з ESLint 10; оновлення цього інструмента розробки потребує сумісної конфігурації та плагінів.

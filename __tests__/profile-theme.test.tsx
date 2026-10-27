@@ -1,6 +1,6 @@
 import React from 'react';
 import { Appearance, StyleSheet, Text, View } from 'react-native';
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react-native';
 import * as SecureStore from 'expo-secure-store';
 import { Colors, ThemeProvider, useTheme, useThemedStyles } from '../src/ui/theme';
 import ThemeSelector from '../src/components/ThemeSelector';

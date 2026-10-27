@@ -15,6 +15,7 @@ export default function WorkoutList({ header, footer }: { header: ReactElement; 
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const request = useRef<AbortController | null>(null);
   const failedCursor = useRef<string | undefined>(undefined);
@@ -26,7 +27,7 @@ export default function WorkoutList({ header, footer }: { header: ReactElement; 
     const controller = new AbortController();
     request.current = controller;
     failedCursor.current = cursor;
-    setLoading(true); setError(null);
+    setLoading(true); setRefreshing(cursor === undefined); setError(null);
     try {
       const page = await listWorkouts(token, controller.signal, cursor);
       if (!active.current || controller.signal.aborted) return;
@@ -43,7 +44,7 @@ export default function WorkoutList({ header, footer }: { header: ReactElement; 
         setError(cause instanceof WorkoutApiError ? cause.message : 'Не вдалося завантажити тренування. Перевір інтернет і спробуй ще раз.');
       }
     } finally {
-      if (active.current && request.current === controller) setLoading(false);
+      if (active.current && request.current === controller) { setLoading(false); setRefreshing(false); }
     }
   }, [token, signOut]);
 
@@ -55,11 +56,12 @@ export default function WorkoutList({ header, footer }: { header: ReactElement; 
 
   return (
     <FlatList
+      testID="workout-list"
       data={workouts}
       keyExtractor={(item) => String(item.id)}
       contentContainerStyle={styles.container}
       ListHeaderComponent={header}
-      refreshing={loading && workouts.length > 0 && !failedCursor.current}
+      refreshing={refreshing && workouts.length > 0}
       onRefresh={() => void load()}
       renderItem={({ item }) => (
         <TouchableOpacity style={styles.card} accessibilityRole="button" accessibilityLabel={`Відкрити тренування ${item.title}`}

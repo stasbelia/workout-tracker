@@ -5,7 +5,7 @@ import { setWorkoutCompletion, Workout, WorkoutApiError } from '../src/workouts/
 import { todayWorkoutDate } from '../src/workouts/workoutDate';
 const mockSignOut = jest.fn();
 jest.mock('../src/auth/SessionProvider', () => ({ useSession: () => ({ token: 'test-token', signOut: mockSignOut }) }));
-jest.mock('expo-router', () => ({ useFocusEffect: (callback: () => (() => void)) => { require('react').useEffect(callback, [callback]); } }));
+jest.mock('expo-router', () => ({ useFocusEffect: (callback: () => (() => void)) => { jest.requireActual<typeof import('react')>('react').useEffect(callback, [callback]); } }));
 jest.mock('../src/workouts/workoutApi', () => ({ ...jest.requireActual('../src/workouts/workoutApi'), setWorkoutCompletion: jest.fn() }));
 jest.mock('../src/config', () => ({ API_BASE_URL: 'https://api.example.test/api' }), { virtual: true });
 const save = jest.mocked(setWorkoutCompletion);

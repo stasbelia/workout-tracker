@@ -13,7 +13,7 @@ jest.mock('../src/auth/SessionProvider', () => ({ useSession: () => ({ token: 't
 jest.mock('../src/config',()=>({API_BASE_URL:'https://api.example.test/api'}),{virtual:true});
 jest.mock('../src/workouts/workoutApi',()=>({...jest.requireActual('../src/workouts/workoutApi'),getWorkout:jest.fn(),updateWorkout:jest.fn(),updateExercise:jest.fn(),deleteWorkout:jest.fn(),deleteExercise:jest.fn()}));
 jest.mock('../src/profile/profileApi',()=>({...jest.requireActual('../src/profile/profileApi'),getProfile:jest.fn()}));
-jest.mock('../src/components/ExerciseLibrary',()=>({name,onName}:{name:string;onName:(name:string)=>void})=>{const {TextInput}=require('react-native');return <TextInput accessibilityLabel="Назва вправи" value={name} onChangeText={onName}/>;});
+jest.mock('../src/components/ExerciseLibrary',()=>function MockExerciseLibrary({name,onName}:{name:string;onName:(name:string)=>void}) {const {TextInput}=jest.requireActual<typeof import('react-native')>('react-native');return <TextInput accessibilityLabel="Назва вправи" value={name} onChangeText={onName}/>;});
 jest.mock('../src/components/SaveExerciseTemplate',()=>()=>null);
 const read=jest.mocked(getWorkout),write=jest.mocked(updateWorkout),exerciseWrite=jest.mocked(updateExercise),remove=jest.mocked(deleteWorkout),removeExercise=jest.mocked(deleteExercise),profile=jest.mocked(getProfile);
 const workout={id:7,title:'Верх',date:'2026-10-23',notes:'План',createdAt:'2026-10-23T10:00:00Z',completedAt:null,revision:3};

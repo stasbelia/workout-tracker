@@ -36,12 +36,13 @@ Open the project in a compatible Expo Go client. The phone must be able to reach
 
 ```sh
 npm test
-npx tsc --noEmit
+npm run typecheck
+npm run lint
 ```
 
-The current suite contains 180 tests across 19 suites. It covers session handling, navigation, API parsing, avatar flows, profile and theme behavior, workout templates, editing, completion and the 1RM calculator. Network responses and device services are mocked; tests do not need production credentials or a real user account.
+The current suite contains 182 tests across 19 suites. It covers session handling, navigation, API parsing, avatar flows, profile and theme behavior, workout templates, editing, completion and the 1RM calculator, including avatar isolation between accounts and the workout refresh indicator. Network responses and device services are mocked; tests do not need production credentials or a real user account.
 
-ESLint and GitHub Actions are not configured yet. Passing automated tests does not replace testing an installed native build.
+TypeScript checks types without generating files. ESLint uses the Expo SDK 58 configuration to check application source and tests; warnings fail the check. GitHub Actions are not configured yet. Passing automated checks does not replace testing an installed native build.
 
 The dependency audit reports unresolved findings in the Expo development toolchain. See [SECURITY.md](SECURITY.md); the project is not described as vulnerability-free.
 
@@ -74,9 +75,9 @@ Local API configuration, deployment notes, database exports, credentials and his
 
 ### Перевірки
 
-`npm test` запускає 180 тестів у 19 наборах; `npx tsc --noEmit` перевіряє типи. Тести охоплюють сесії, навігацію, API, аватари, профіль, теми, шаблони, редагування, завершення тренувань і калькулятор 1RM. Вони використовують підставні відповіді та сервіси, без робочих ключів і реальних акаунтів.
+`npm test` запускає 182 тести у 19 наборах; `npm run typecheck` перевіряє типи без створення файлів. Тести охоплюють сесії, навігацію, API, аватари, профіль, теми, шаблони, редагування, завершення тренувань і калькулятор 1RM, зокрема приховування аватара попереднього акаунта та індикатор оновлення списку. Вони використовують підставні відповіді та сервіси, без робочих ключів і реальних акаунтів.
 
-ESLint і автоматичний запуск перевірок через GitHub Actions ще не налаштовані. Тести не замінюють перевірку окремої встановленої збірки.
+`npm run lint` перевіряє код застосунку й тести за правилами Expo SDK 58; попередження також призводять до невдалої перевірки. Автоматичний запуск через GitHub Actions ще не налаштовано. Ці перевірки не замінюють тестування окремої встановленої збірки.
 
 Перевірка залежностей має невирішені зауваження до інструментів розробки Expo. Деталі — у [SECURITY.md](SECURITY.md); відсутність вразливостей не заявляється.
 

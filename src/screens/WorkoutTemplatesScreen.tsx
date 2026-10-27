@@ -14,6 +14,8 @@ export default function WorkoutTemplatesScreen(){
   active.current=true;operation.current?.abort();busy.current=false;setRemoving(false);setSelected(null);const controller=new AbortController();operation.current=controller;setLoading(true);setError(null);setTemplates([]);
   void(async()=>{try{if(!token)return;const data=await listWorkoutTemplates(token,controller.signal);if(active.current&&!controller.signal.aborted)setTemplates(data);}catch(cause){if(!active.current||controller.signal.aborted)return;if(cause instanceof WorkoutApiError&&cause.status===401)await signOut().catch(()=>setError('Не вдалося завершити сесію.'));else setError('Не вдалося завантажити шаблони тренувань.');}finally{if(active.current&&!controller.signal.aborted)setLoading(false);}})();
   return()=>{active.current=false;controller.abort();operation.current?.abort();};
+  // Retry changes callback identity so useFocusEffect reloads; it is not API input.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
  },[token,signOut,attempt]));
  async function remove(){
   if(!token||!selected||busy.current)return;busy.current=true;setRemoving(true);setError(null);const controller=new AbortController();operation.current=controller;

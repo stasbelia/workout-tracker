@@ -10,7 +10,8 @@ export default function AvatarPicker() {
   const { colors } = useTheme();
   const styles = useThemedStyles(createStyles);
   const { token, signOut } = useSession();
-  const [avatar, setAvatar] = useState<Avatar | null>(null);
+  const [avatarState, setAvatarState] = useState<{ token: string; avatar: Avatar | null } | null>(null);
+  const avatar = avatarState?.token === token ? avatarState.avatar : null;
   const [isPicking, setIsPicking] = useState(false);
   const [stage, setStage] = useState('');
   const [savedNotice, setSavedNotice] = useState(false);
@@ -20,26 +21,24 @@ export default function AvatarPicker() {
   const busy = useRef(false);
   const operation = useRef<AbortController | null>(null);
   const logout = useRef(signOut);
-  logout.current = signOut;
+  useEffect(() => { logout.current = signOut; }, [signOut]);
 
-  const loadAvatar = useCallback(async () => {
+  const loadAvatar = useCallback(() => {
     if (!token || busy.current) return;
     operation.current?.abort();
     const controller = new AbortController();
     operation.current = controller;
-    try {
-      const saved = await getAvatar(token, controller.signal);
-      if (active.current && !controller.signal.aborted) { setAvatar(saved); setError(null); }
-    } catch (failure) {
+    return getAvatar(token, controller.signal).then((saved) => {
+      if (active.current && !controller.signal.aborted) { setAvatarState({ token, avatar: saved }); setError(null); }
+    }).catch(async (failure: unknown) => {
       if (!active.current || controller.signal.aborted) return;
       setError(failure instanceof AvatarApiError ? failure.message : 'Не вдалося отримати аватар. Спробуй ще раз.');
       if (failure instanceof AvatarApiError && failure.status === 401) await logout.current().catch(() => {});
-    }
+    });
   }, [token]);
 
   useEffect(() => {
     active.current = true;
-    setAvatar(null);
     void loadAvatar();
     const listener = AppState.addEventListener('change', (state) => { if (state === 'active') void loadAvatar(); });
     const timer = setInterval(() => { void loadAvatar(); }, 12 * 60_000);
@@ -85,7 +84,7 @@ export default function AvatarPicker() {
         if (active.current && !controller.signal.aborted) setStage(message);
       });
       if (active.current && !controller.signal.aborted) {
-        setAvatar(saved); setStage('Фото збережено'); setSavedNotice(true);
+        setAvatarState({ token, avatar: saved }); setStage('Фото збережено'); setSavedNotice(true);
         noticeTimer.current = setTimeout(() => { if (active.current) setSavedNotice(false); }, 4000);
       }
     } catch (failure) {

@@ -1,4 +1,4 @@
-import React, { createContext, createElement, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Appearance } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 
@@ -39,7 +39,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
     } finally { busy.current = false; }
   }, []);
   const value = useMemo(() => ({ mode, colors: mode === 'light' ? lightColors : darkColors, setMode }), [mode, setMode]);
-  return createElement(ThemeContext.Provider, { value }, children);
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 export const useTheme = () => useContext(ThemeContext);
 export function useThemedStyles<T>(factory: (colors: Colors) => T): T {

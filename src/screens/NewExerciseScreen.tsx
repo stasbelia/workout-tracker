@@ -69,6 +69,8 @@ export default function NewExerciseScreen() {
       })();
     }
     return () => { active.current = false; operation.abort(); controller.current?.abort(); };
+  // Retry changes callback identity so useFocusEffect reloads; it is not API input.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editing,id,exerciseId,token,signOut,attempt]));
 
   function goBack() {

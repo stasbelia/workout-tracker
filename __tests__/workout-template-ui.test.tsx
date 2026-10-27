@@ -60,5 +60,5 @@ test('некоректний ID шаблону не запитує сервер 
 });
 test('відхід зі списку скасовує читання',async()=>{
  list.mockImplementation(()=>new Promise(()=>{}));const app=await open();await waitFor(()=>expect(list).toHaveBeenCalledTimes(1));const signal=list.mock.calls[0][1];
- const {router}=require('expo-router');await act(async()=>router.push('/'));expect(signal.aborted).toBe(true);expect(app.getPathname()).toBe('/');
+ const {router}=jest.requireActual<typeof import('expo-router')>('expo-router');await act(async()=>router.push('/'));expect(signal.aborted).toBe(true);expect(app.getPathname()).toBe('/');
 });

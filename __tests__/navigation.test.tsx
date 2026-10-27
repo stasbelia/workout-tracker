@@ -22,8 +22,8 @@ jest.mock('../src/components/ProfileDetails', () => () => null);
 jest.mock('../src/ui/theme', () => ({ ...jest.requireActual('../src/ui/theme'), ThemeProvider: ({ children }: { children: React.ReactNode }) => children }));
 jest.mock('../src/components/AvatarThumbnail', () => () => null);
 jest.mock('../src/components/HomeGreeting', () => () => null);
-jest.mock('../src/components/WorkoutList', () => ({ header, footer }: { header: React.ReactElement; footer: React.ReactElement }) => {
-  const React = require('react');
+jest.mock('../src/components/WorkoutList', () => function MockWorkoutList({ header, footer }: { header: React.ReactElement; footer: React.ReactElement }) {
+  const React = jest.requireActual<typeof import('react')>('react');
   return React.createElement(React.Fragment, null, header, footer);
 });
 

@@ -6,9 +6,8 @@ import AvatarPicker from '../components/AvatarPicker';
 import BottomNavigation from '../components/BottomNavigation';
 import ProfileDetails from '../components/ProfileDetails';
 import ThemeSelector from '../components/ThemeSelector';
-import { Colors, useTheme, useThemedStyles } from '../ui/theme';
+import { Colors, useThemedStyles } from '../ui/theme';
 export default function ProfileScreen() {
-  const { colors } = useTheme();
   const styles = useThemedStyles(createStyles);
   const {signOut}=useSession();
   const [leaving,setLeaving]=useState(false),busy=useRef(false);
